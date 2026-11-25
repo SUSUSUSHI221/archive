@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#484846" />
+    <title>アーカイブサイト</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --paper: #484846;
+        --ink: #f5f4ef;
+        --line: rgba(245, 244, 239, 0.58);
+        --focus: #f0d76d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      .page {
+        width: min(1560px, calc(100% - 3rem));
+        margin: 0 auto;
+      }
+
+      .masthead {
+        display: flex;
+        min-height: min(43vw, 34rem);
+        padding: clamp(1.1rem, 2.2vw, 2rem) 0 clamp(1.6rem, 3.4vw, 3.75rem);
+        align-items: flex-end;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--ink);
+      }
+
+      h1 {
+        margin: 0;
+        font-family: "Helvetica Neue Condensed Bold", "Arial Narrow", "Helvetica Neue", sans-serif;
+        font-size: clamp(3.7rem, 10.8vw, 11.5rem);
+        font-stretch: condensed;
+        font-weight: 700;
+        letter-spacing: -0.065em;
+        line-height: 0.8;
+      }
+
+      h1 span {
+        display: block;
+      }
+
+      h1 span:last-child {
+        padding-left: 0.52em;
+      }
+
+      .archive {
+        column-count: 2;
+        column-gap: clamp(0.65rem, 1.2vw, 1.35rem);
+        padding: clamp(1.1rem, 2.4vw, 2.5rem) 0 clamp(3rem, 6vw, 6rem);
+      }
+
+      .archive-item {
+        display: inline-block;
+        width: 100%;
+        margin: 0 0 clamp(0.9rem, 1.45vw, 1.45rem);
+        min-width: 0;
+        break-inside: avoid;
+        -webkit-column-break-inside: avoid;
+      }
+
+      .image-button {
+        display: block;
+        width: 100%;
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        background: transparent;
+        cursor: zoom-in;
+      }
+
+      .image-button:focus-visible,
+      .viewer-close:focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 5px;
+      }
+
+      .image-button img {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #696966;
+        filter: grayscale(1) contrast(1.08) brightness(0.98);
+        transition: filter 180ms ease, transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .image-button:hover img {
+        filter: grayscale(1) contrast(1.13) brightness(1.02);
+        transform: scale(1.008);
+      }
+
+      figcaption {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-top: 0.45rem;
+        padding-top: 0.42rem;
+        border-top: 1px solid var(--line);
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.02em;
+        line-height: 1.4;
+      }
+
+      figcaption time {
+        flex: 0 0 auto;
+        font-variant-numeric: tabular-nums;
+      }
+
+      dialog {
+        width: min(96vw, 1680px);
+        max-width: none;
+        max-height: 96vh;
+        margin: auto;
+        padding: clamp(1rem, 2vw, 2rem);
+        overflow: visible;
+        border: 0;
+        background: #11110f;
+      }
+
+      dialog::backdrop {
+        background: rgba(14, 14, 12, 0.88);
+        backdrop-filter: blur(3px);
+      }
+
+      .viewer-frame {
+        display: grid;
+        max-height: calc(96vh - 2rem);
+        place-items: center;
+      }
+
+      #viewer-image {
+        display: block;
+        max-width: 100%;
+        max-height: calc(96vh - 4rem);
+        object-fit: contain;
+        filter: grayscale(1) contrast(1.08);
+      }
+
+      .viewer-close {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.6rem;
+        display: grid;
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 999px;
+        background: rgba(17, 17, 15, 0.72);
+        color: white;
+        font: 1.5rem/1 sans-serif;
+        cursor: pointer;
+      }
+
+      @media (max-width: 760px) {
+        .page {
+          width: min(1560px, calc(100% - 2rem));
+        }
+
+        figcaption {
+          margin-top: 0.45rem;
+          font-size: 0.73rem;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .page {
+          width: min(1560px, calc(100% - 1.5rem));
+        }
+
+        .masthead {
+          min-height: min(82vw, 31rem);
+          padding-top: 1rem;
+        }
+
+        h1 {
+          font-size: clamp(3.6rem, 17vw, 6.6rem);
+        }
+
+        .archive {
+          column-count: 1;
+          padding-top: 1.1rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        .image-button img {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="masthead">
+        <h1><span>ARCHIVE</span><span>SITE</span></h1>
+      </header>
+
+      <main class="archive" aria-label="アーカイブ">
+        <figure class="archive-item">
+          <button class="image-button" type="button" aria-label="写真を拡大">
+            <img src="images/01.jpg" alt="(ここに言葉)" width="1200" height="674" fetchpriority="high" />
+          </button>
+          <figcaption><span>trash at tourist spots</span><time datetime="2026-01-03">01,03,2026</time></figcaption>
+        </figure>
+        <figure class="archive-item">
+          <button class="image-button" type="button" aria-label="写真を拡大">
+            <img src="images/02.jpg" alt="(ここに言葉)" width="1200" height="674" loading="lazy" />
+          </button>
+          <figcaption><span>Monkey's Table</span><time datetime="2026-01-03">01,03,2026</time></figcaption>
+        </figure>
+        <figure class="archive-item">
+          <button class="image-button" type="button" aria-label="写真を拡大">
+            <img src="images/03.jpg" alt="(ここに言葉)" width="672" height="1200" loading="lazy" />
+          </button>
+          <figcaption><span>0.25 seconds</span><time datetime="2025-09-21">09,21,2025</time></figcaption>
+        </figure>
+        <figure class="archive-item">
+          <button class="image-button" type="button" aria-label="写真を拡大">
+            <img src="images/04.jpg" alt="(ここに言葉)" width="1200" height="674" loading="lazy" />
+          </button>
+          <figcaption><span>bait that stays</span><time datetime="2026-03-10">03,10,2026</time></figcaption>
+        </figure>
+        <figure class="archive-item">
+          <button class="image-button" type="button" aria-label="写真を拡大">
+            <img src="images/05.jpg" alt="(ここに言葉)" width="900" height="1200" loading="lazy" />
+          </button>
+          <figcaption><span>abduction</span><time datetime="2025-05-29">05,29,2025</time></figcaption>
+        </figure>
+        <figure class="archive-item">
+          <button class="image-button" type="button" aria-label="写真を拡大">
+            <img src="images/06.jpg" alt="(ここに言葉)" width="675" height="1200" loading="lazy" />
+          </button>
+          <figcaption><span>spiderman</span><time datetime="2026-07-31">07,31,2026</time></figcaption>
+        </figure>
+        <figure class="archive-item">
+          <button class="image-button" type="button" aria-label="写真を拡大">
+            <img src="images/07.jpg" alt="(ここに言葉)" width="675" height="1200" loading="lazy" />
+          </button>
+          <figcaption><span>आकाश</span><time datetime="2025-12-29">12,29,2025</time></figcaption>
+        </figure>
+        <figure class="archive-item">
+          <button class="image-button" type="button" aria-label="写真を拡大">
+            <img src="images/08.jpg" alt="(ここに言葉)" width="675" height="1200" loading="lazy" />
+          </button>
+          <figcaption><span>good morning</span><time datetime="2026-01-05">01,05,2026</time></figcaption>
+        </figure>
+        <figure class="archive-item">
+          <button class="image-button" type="button" aria-label="写真を拡大">
+            <img src="images/09.jpg" alt="(ここに言葉)" width="675" height="1200" loading="lazy" />
+          </button>
+          <figcaption><span>human face mirror</span><time datetime="2026-03-11">03,11,2026</time></figcaption>
+        </figure>
+      </main>
+    </div>
+
+    <dialog id="viewer" aria-label="写真の拡大表示">
+      <button class="viewer-close" type="button" aria-label="閉じる">×</button>
+      <div class="viewer-frame">
+        <img id="viewer-image" alt="" />
+      </div>
+    </dialog>
+
+    <script>
+      const viewer = document.querySelector("#viewer");
+      const viewerImage = document.querySelector("#viewer-image");
+      const closeButton = document.querySelector(".viewer-close");
+
+      document.querySelectorAll(".image-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const image = button.querySelector("img");
+          viewerImage.src = image.currentSrc || image.src;
+          viewerImage.alt = image.alt;
+          viewer.showModal();
+        });
+      });
+
+      closeButton.addEventListener("click", () => viewer.close());
+
+      viewer.addEventListener("click", (event) => {
+        if (event.target === viewer) viewer.close();
+      });
+    </script>
+  </body>
+</html>
